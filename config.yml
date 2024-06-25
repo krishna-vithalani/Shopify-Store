@@ -1,6 +1,6 @@
 development:
   password: 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
-  theme_id: 143274868951
+  theme_id: 143016263895
   store: kisha-test-store.myshopify.com
   ignore_files:
     - README.md
