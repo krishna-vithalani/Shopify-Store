@@ -1,0 +1,46 @@
+<div id="slideshow">
+  <div class="wrapper">
+    <center>
+      <h2>{{ section.settings.slider_title }}</h2>
+    </center>
+    <div class="rslides_container">
+      <div class="rslides" id="slider1">
+        <div class="slick-slider-container">
+          {% for product in collections[section.settings.collection].products %}
+            <div class="slideshow-item">
+              <a href="{{ product.url }}">
+                <img src="{{ product.featured_image | img_url: "medium" }}" alt="{{ product.title }}">
+              </a>
+              <h3>{{ product.title }}</h3>
+              <h4>{{ product.price | money }}</h4>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product Slider Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "slider_title",
+      "label": "Slider Title"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "product_slider_section",
+      "category": "collections"
+    }
+  ]
+}
+{% endschema %}

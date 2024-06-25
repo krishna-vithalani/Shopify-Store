@@ -1,0 +1,18 @@
+development:
+  password: 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
+  theme_id: 143274868951
+  store: kisha-test-store.myshopify.com
+  ignore_files:
+    - README.md
+    - .gitignore
+    - config/settings_data.json
+    - "templates/"
+    - "*.json"
+    - "*.png"
+    - "*.jpg"
+    - "*.jpeg"
+    - "*.svg"
+    - "*.gif"
+    - "*.mp4"
+    - "*.JPG"
+    - "*.js.map"

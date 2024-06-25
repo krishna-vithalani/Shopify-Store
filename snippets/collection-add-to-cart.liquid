@@ -1,0 +1,198 @@
+<style>
+    .collection-cart {
+        z-index: 9999;
+        position: absolute;
+    }
+    .mini-cart-popup {
+        position: fixed;
+        left: 70%;
+        top: 40%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: none;
+        max-height: 400px !important;
+        overflow-x: auto;
+    }
+    .close-mini-cart {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+    }
+    img {
+        height: 150px;
+        width: 150px;
+    }
+    .mini-cart-item {
+        display: flex;
+        border: 1px solid #000;
+        justify-content: space-evenly;
+        align-items: baseline;
+    }
+    .quantity-control {
+        display: flex;
+        align-items: center;
+    }
+    .quantity-control input {
+        width: 40px;
+        text-align: center;
+    }
+    .variant-option {
+      display: inline-block;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      cursor: pointer;
+    }
+    .alert-message {
+      display: none;
+      color: red;
+    }
+    .color-swatch {
+    width: 30px; /* Adjust size as needed */
+    height: 30px; /* Adjust size as needed */
+    border: 1px solid #ccc; /* Optional: Add border for swatch */
+    margin-right: 5px; /* Optional: Adjust spacing between swatches */
+    display: inline-block;
+    cursor: pointer; /* Optional: Change cursor to pointer on hover */
+  }
+
+  .variant-option.selected .color-swatch {
+    border-color: #333; /* Optional: Highlight selected swatch */
+  }
+   .color-display {
+    display:inline-block;
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+    .variant-option,
+  .color-swatch {
+    display: none; /* Hide by default */
+  }
+</style>
+
+{% for variant in product.variants %}
+  <div class="variant-option" data-variant-id="{{ variant.id }}" data-available="{{ variant.available }}">
+    {{ variant.title }}
+  </div>
+  <div
+    class="color-swatch"
+    data-{{ variant.id }}-option="{{ variant.option2 }}"
+    data-variant-id="{{ variant.id }}"
+    style="background-color: {{ variant.option2 }};"
+  >
+    {{ variant.option2 }}
+  </div>
+{% endfor %}
+
+<script type="application/json" id="product-variants-data-{{ product.id}}">
+  {{ product.variants | json }}
+</script>
+
+<!--
+  <div class="variant-radios no-js-hidden" data-product-id="{{ product.id }}">
+    {% assign number = 0 %}
+    {% for option in product.options_with_values %}
+      {% assign number = number | plus: 1 %}
+      <fieldset class="js product-form__input" data-variant-id="{{ product.id }}-{{ number }}">
+        <legend class="form__label">{{ option.name }}</legend>
+        {% for value in option.values %}
+          <input
+            type="radio"
+            id="{{ product.id }}-{{ option.position }}-{{ forloop.index0 }}"
+            name="{{ option.name }}-{{ product.id }}-{{ forloop.index0 }}"
+            value="{{ value | escape }}"
+            {% if forloop.first %}
+              checked
+            {% endif %}
+          >
+          <label for="{{ product.id }}-{{ option.position }}-{{ forloop.index0 }}">
+            {{ value }}
+          </label>
+        {% endfor %}
+      </fieldset>
+    {% endfor %}
+  </div>
+-->
+
+<!--
+  <div class="variant-radios no-js-hidden" data-product-id="{{ product.id }}">
+    {% assign number = 0 %}
+    {% for option in product.options_with_values %}
+      {% assign number = number | plus: 1 %}
+      <fieldset class="js product-form__input" data-variant-id="{{ product.id }}-{{ number }}">
+        <legend class="form__label">{{ option.name }}</legend>
+        {% assign tabName = section.settings.title | handle %}
+        {% assign tabIdentifier = tabName
+          | append: '-'
+          | append: product.id
+          | append: '-'
+          | append: option.name
+          | handle
+        %}
+        {% assign isFirst = true %}
+        {% for value in option.values %}
+          <input
+            type="radio"
+            id="{{ product.id }}-{{ option.position }}-{{ forloop.index0 }}"
+            name="product-option-{{ tabIdentifier }}"
+            value="{{ value | escape }}"
+            {% if isFirst %}
+              checked
+              {% assign isFirst = false %}
+            {% endif %}
+          >
+          <label for="{{ product.id }}-{{ option.position }}-{{ forloop.index0 }}">
+            {{ value }}
+          </label>
+        {% endfor %}
+      </fieldset>
+    {% endfor %}
+  </div>
+-->
+
+<div class="variant-radios no-js-hidden" data-product-id="{{ product.id }}">
+  {% assign number = 0 %}
+  {% for option in product.options_with_values %}
+    {% assign number = number | plus: 1 %}
+    <fieldset class="js product-form__input" data-variant-id="{{ product.id }}-{{ number }}">
+      <legend class="form__label">{{ option.name }}</legend>
+      {% assign tabName = section.settings.title | handle %}
+      {% assign collectionHandle = collection.handle | handle %}
+      {% assign tabIdentifier = tabName
+        | append: '-'
+        | append: product.id
+        | append: '-'
+        | append: option.name
+        | handle
+      %}
+      {% assign isFirst = true %}
+      {% for value in option.values %}
+        <input
+          type="radio"
+          id="{{ product.id }}-{{ option.position }}-{{ forloop.index0 }}"
+          name="product-option-{{ collectionHandle }}-{{ tabIdentifier }}"
+          value="{{ value | escape }}"
+          {% if isFirst %}
+            checked
+            {% assign isFirst = false %}
+          {% endif %}
+        >
+        <label for="{{ product.id }}-{{ option.position }}-{{ forloop.index0 }}">
+          {{ value }}
+        </label>
+      {% endfor %}
+    </fieldset>
+  {% endfor %}
+</div>
+
+<input type="hidden" id="matching-variant-id" name="matching_variant_id" value="">
+<button type="button" name="add" class="ajax-button-new">Add to cart ajax</button>
+<h6 class="alert-message"></h6>
